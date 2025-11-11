@@ -1,0 +1,82 @@
+name: uc6-l3vpn
+
+mgmt:
+  network: clab-mgmt
+  ipv4-subnet: 172.20.20.0/24
+
+topology:
+  nodes:
+
+    # Provider Edge 1
+    pe1:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.11
+      startup-config: configs/pe1.cfg
+
+    # Provider Edge 2
+    pe2:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.12
+      startup-config: configs/pe2.cfg
+
+    # Provider (Core) Router
+    p:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.13
+      startup-config: configs/p.cfg
+
+    # Customer Edge 1
+    ce1:
+      kind: linux
+      image: alpine:3.22.1
+      mgmt-ipv4: 172.20.20.14
+      binds:
+        - ce-configs/setup-ssh.sh:/tmp/setup-ssh.sh
+      exec:
+        # Network configuration
+        - "ip addr add 10.1.1.1/32 dev lo"
+        - "ip addr add 10.10.10.1/24 dev eth1"
+        - "ip route add 10.40.40.0/24 via 10.10.10.2 dev eth1"
+        - "ip route add 10.5.5.5/32 via 10.10.10.2 dev eth1"
+        # SSH setup
+        - "sh /tmp/setup-ssh.sh"
+        # Set prompt
+        - "echo 'export PS1=\"\\u@\\h:\\w\\$ \"' >> /home/claude/.profile"
+
+    # Customer Edge 2
+    ce2:
+      kind: linux
+      image: alpine:3.22.1
+      mgmt-ipv4: 172.20.20.15
+      binds:
+        - ce-configs/setup-ssh.sh:/tmp/setup-ssh.sh
+      exec:
+        # Network configuration
+        - "ip addr add 10.5.5.5/32 dev lo"
+        - "ip addr add 10.40.40.5/24 dev eth1"
+        - "ip route add 10.10.10.0/24 via 10.40.40.4 dev eth1"
+        - "ip route add 10.1.1.1/32 via 10.40.40.4 dev eth1"
+        # SSH setup
+        - "sh /tmp/setup-ssh.sh"
+        # Set prompt
+        - "echo 'export PS1=\"\\u@\\h:\\w\\$ \"' >> /home/claude/.profile"
+
+  links:
+    # CE1 to PE1 connection
+    # CE1 eth1 <-> PE1 ge-0/0/0 (eth1)
+    - endpoints: ["ce1:eth1", "pe1:eth1"]
+    
+    # PE1 to P connection
+    # PE1 ge-0/0/1 (eth2) <-> P ge-0/0/0 (eth1)
+    - endpoints: ["pe1:eth2", "p:eth1"]
+    
+    # P to PE2 connection
+    # P ge-0/0/1 (eth2) <-> PE2 ge-0/0/0 (eth1)
+    - endpoints: ["p:eth2", "pe2:eth1"]
+    
+    # PE2 to CE2 connection
+    # PE2 ge-0/0/1 (eth2) <-> CE2 eth1
+    - endpoints: ["pe2:eth2", "ce2:eth1"]

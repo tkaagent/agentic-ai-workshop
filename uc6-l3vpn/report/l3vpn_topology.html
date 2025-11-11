@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L3VPN Topology - Use Case #6</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        
+        .status {
+            padding: 12px;
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #234e52;
+        }
+        
+        .canvas-wrapper {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        #topology-canvas {
+            width: 100%;
+            height: 700px;
+            cursor: grab;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #f7fafc 0%, #edf2f7 100%);
+            display: block;
+        }
+        
+        #topology-canvas:active {
+            cursor: grabbing;
+        }
+        
+        .legend {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            font-size: 13px;
+            border: 2px solid #e2e8f0;
+            min-width: 220px;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2d3748;
+            font-size: 16px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            color: #4a5568;
+        }
+        
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            margin-right: 12px;
+            border: 2px solid #cbd5e0;
+        }
+        
+        .legend-line {
+            width: 40px;
+            height: 4px;
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            max-width: 320px;
+            font-size: 13px;
+            border: 2px solid #e2e8f0;
+            display: none;
+        }
+        
+        .info-panel.active {
+            display: block;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        
+        .info-item {
+            margin: 8px 0;
+            color: #4a5568;
+            line-height: 1.8;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 L3VPN Interactive Topology - Use Case #6</h1>
+            <p class="subtitle">Drag nodes to rearrange • Click nodes for details • Hover over links for interface info</p>
+            <div class="controls">
+                <button class="btn btn-primary" onclick="resetLayout()">🔄 Reset Layout</button>
+                <button class="btn btn-secondary" onclick="toggleLabels()">🏷️ Toggle Labels</button>
+            </div>
+            <div class="status">
+                🟢 <strong>Topology Status:</strong> All nodes operational • L3VPN Active • BGP Sessions Established
+            </div>
+        </div>
+        
+        <div class="canvas-wrapper">
+            <canvas id="topology-canvas"></canvas>
+            
+            <div class="legend">
+                <div class="legend-title">🎨 Node Types</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #667eea;"></div>
+                    <span>PE Router</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f093fb;"></div>
+                    <span>P Router</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4facfe;"></div>
+                    <span>CE Device</span>
+                </div>
+                <div class="legend-item" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                    <div class="legend-line" style="background: #48bb78;"></div>
+                    <span>VPN Link</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line" style="background: #ed8936;"></div>
+                    <span>MPLS Core</span>
+                </div>
+            </div>
+            
+            <div class="info-panel" id="info-panel">
+                <div class="info-title" id="info-title">Node Information</div>
+                <div id="info-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('topology-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let showLabels = true;
+        let selectedNode = null;
+        let draggedNode = null;
+        let offsetX = 0;
+        let offsetY = 0;
+        
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            draw();
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('load', resizeCanvas);
+        
+        const nodes = [
+            {
+                id: 'ce1', name: 'CE1', type: 'ce',
+                x: 150, y: 350,
+                loopback: '10.1.1.1/32',
+                mgmt: '172.20.20.14/24',
+                interfaces: { 'eth1': '10.10.10.1/24' }
+            },
+            {
+                id: 'pe1', name: 'PE1', type: 'pe',
+                x: 400, y: 350,
+                loopback: '10.2.2.2/32',
+                mgmt: '172.20.20.11/24',
+                as: 'AS 65001',
+                vrf: 'vrfblue (RD: 10.2.2.2:100)',
+                interfaces: { 'eth1': '10.10.10.2/24', 'eth2': '10.20.20.2/24' }
+            },
+            {
+                id: 'p', name: 'P', type: 'p',
+                x: 750, y: 350,
+                loopback: '10.3.3.3/32',
+                mgmt: '172.20.20.13/24',
+                interfaces: { 'eth1': '10.20.20.3/24', 'eth2': '10.30.30.3/24' }
+            },
+            {
+                id: 'pe2', name: 'PE2', type: 'pe',
+                x: 1100, y: 350,
+                loopback: '10.4.4.4/32',
+                mgmt: '172.20.20.12/24',
+                as: 'AS 65003',
+                vrf: 'vrfblue (RD: 10.4.4.4:100)',
+                interfaces: { 'eth1': '10.30.30.4/24', 'eth2': '10.40.40.4/24' }
+            },
+            {
+                id: 'ce2', name: 'CE2', type: 'ce',
+                x: 1350, y: 350,
+                loopback: '10.5.5.5/32',
+                mgmt: '172.20.20.15/24',
+                interfaces: { 'eth1': '10.40.40.5/24' }
+            }
+        ];
+        
+        const links = [
+            { from: 'ce1', to: 'pe1', fromInt: 'eth1', toInt: 'eth1', fromIP: '10.10.10.1/24', toIP: '10.10.10.2/24', type: 'vpn' },
+            { from: 'pe1', to: 'p', fromInt: 'eth2', toInt: 'eth1', fromIP: '10.20.20.2/24', toIP: '10.20.20.3/24', type: 'mpls' },
+            { from: 'p', to: 'pe2', fromInt: 'eth2', toInt: 'eth1', fromIP: '10.30.30.3/24', toIP: '10.30.30.4/24', type: 'mpls' },
+            { from: 'pe2', to: 'ce2', fromInt: 'eth2', toInt: 'eth1', fromIP: '10.40.40.4/24', toIP: '10.40.40.5/24', type: 'vpn' }
+        ];
+        
+        const initialPositions = JSON.parse(JSON.stringify(nodes));
+        
+        function resetLayout() {
+            nodes.forEach((node, i) => {
+                node.x = initialPositions[i].x;
+                node.y = initialPositions[i].y;
+            });
+            draw();
+        }
+        
+        function toggleLabels() {
+            showLabels = !showLabels;
+            draw();
+        }
+        
+        function getNode(x, y) {
+            for (let node of nodes) {
+                const dx = x - node.x;
+                const dy = y - node.y;
+                if (Math.sqrt(dx * dx + dy * dy) < 60) return node;
+            }
+            return null;
+        }
+        
+        function showNodeInfo(node) {
+            document.getElementById('info-title').textContent = `${node.name} - ${node.type.toUpperCase()}`;
+            
+            let html = `
+                <div class="info-item"><span class="info-label">Loopback:</span> ${node.loopback}</div>
+                <div class="info-item"><span class="info-label">Management:</span> ${node.mgmt}</div>
+            `;
+            
+            if (node.as) html += `<div class="info-item"><span class="info-label">AS:</span> ${node.as}</div>`;
+            if (node.vrf) html += `<div class="info-item"><span class="info-label">VRF:</span> ${node.vrf}</div>`;
+            
+            html += `<div class="info-item" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                <span class="info-label">Interfaces:</span>
+            </div>`;
+            
+            for (let [intf, ip] of Object.entries(node.interfaces)) {
+                html += `<div class="info-item" style="margin-left: 15px;">• ${intf}: ${ip}</div>`;
+            }
+            
+            document.getElementById('info-content').innerHTML = html;
+            document.getElementById('info-panel').classList.add('active');
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw links
+            links.forEach(link => {
+                const fromNode = nodes.find(n => n.id === link.from);
+                const toNode = nodes.find(n => n.id === link.to);
+                
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.strokeStyle = link.type === 'vpn' ? '#48bb78' : '#ed8936';
+                ctx.lineWidth = 5;
+                ctx.stroke();
+                
+                if (showLabels) {
+                    const dx = toNode.x - fromNode.x;
+                    const dy = toNode.y - fromNode.y;
+                    const len = Math.sqrt(dx * dx + dy * dy);
+                    const perpX = -dy / len * 30;
+                    const perpY = dx / len * 30;
+                    
+                    // From label
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                    ctx.fillRect(fromNode.x + 55 + perpX - 8, fromNode.y - 38 + perpY, 100, 45);
+                    ctx.strokeStyle = '#cbd5e0';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(fromNode.x + 55 + perpX - 8, fromNode.y - 38 + perpY, 100, 45);
+                    
+                    ctx.fillStyle = '#2d3748';
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(link.fromInt, fromNode.x + 50 + perpX, fromNode.y - 25 + perpY);
+                    ctx.font = '11px sans-serif';
+                    ctx.fillStyle = '#718096';
+                    ctx.fillText(link.fromIP, fromNode.x + 50 + perpX, fromNode.y - 8 + perpY);
+                    
+                    // To label
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                    ctx.fillRect(toNode.x - 147 - perpX, toNode.y - 38 - perpY, 100, 45);
+                    ctx.strokeStyle = '#cbd5e0';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(toNode.x - 147 - perpX, toNode.y - 38 - perpY, 100, 45);
+                    
+                    ctx.fillStyle = '#2d3748';
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.fillText(link.toInt, toNode.x - 142 - perpX, toNode.y - 25 - perpY);
+                    ctx.font = '11px sans-serif';
+                    ctx.fillStyle = '#718096';
+                    ctx.fillText(link.toIP, toNode.x - 142 - perpX, toNode.y - 8 - perpY);
+                }
+            });
+            
+            // Draw nodes
+            nodes.forEach(node => {
+                const colors = {
+                    pe: { start: '#667eea', end: '#764ba2' },
+                    p: { start: '#f093fb', end: '#f5576c' },
+                    ce: { start: '#4facfe', end: '#00f2fe' }
+                };
+                
+                const gradient = ctx.createLinearGradient(node.x - 60, node.y - 60, node.x + 60, node.y + 60);
+                gradient.addColorStop(0, colors[node.type].start);
+                gradient.addColorStop(1, colors[node.type].end);
+                
+                // Shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 8;
+                
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 60, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = selectedNode === node ? '#ffd700' : 'rgba(255, 255, 255, 0.9)';
+                ctx.stroke();
+                
+                ctx.shadowColor = 'transparent';
+                
+                // Text
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 22px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(node.name, node.x, node.y - 8);
+                
+                ctx.font = '13px sans-serif';
+                ctx.fillText(node.type.toUpperCase(), node.x, node.y + 12);
+                
+                if (showLabels) {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
+                    ctx.fillRect(node.x - 65, node.y + 75, 130, 32);
+                    ctx.strokeStyle = '#cbd5e0';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(node.x - 65, node.y + 75, 130, 32);
+                    
+                    ctx.fillStyle = '#2d3748';
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.fillText('Loopback', node.x, node.y + 85);
+                    ctx.font = '11px sans-serif';
+                    ctx.fillStyle = '#718096';
+                    ctx.fillText(node.loopback, node.x, node.y + 100);
+                }
+            });
+        }
+        
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            draggedNode = getNode(x, y);
+            if (draggedNode) {
+                offsetX = x - draggedNode.x;
+                offsetY = y - draggedNode.y;
+                selectedNode = draggedNode;
+                showNodeInfo(draggedNode);
+                draw();
+            }
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            if (draggedNode) {
+                draggedNode.x = x - offsetX;
+                draggedNode.y = y - offsetY;
+                draw();
+            }
+            
+            canvas.style.cursor = getNode(x, y) ? 'pointer' : 'grab';
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            draggedNode = null;
+        });
+        
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const clickedNode = getNode(x, y);
+            if (clickedNode) {
+                selectedNode = clickedNode;
+                showNodeInfo(clickedNode);
+            } else {
+                selectedNode = null;
+                document.getElementById('info-panel').classList.remove('active');
+            }
+            draw();
+        });
+        
+        setTimeout(resizeCanvas, 100);
+    </script>
+</body>
+</html>

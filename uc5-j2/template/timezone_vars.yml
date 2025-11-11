@@ -1,0 +1,5 @@
+# Sample variables
+#   - America/New_York
+#   - Europe/London
+#   - Asia/Tokyo
+timezone: America/Los_Angeles

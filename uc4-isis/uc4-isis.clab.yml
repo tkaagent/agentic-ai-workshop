@@ -1,0 +1,128 @@
+name: uc4-isis
+
+mgmt:
+  network: clab-mgmt
+  ipv4-subnet: 172.20.20.0/24
+
+topology:
+  nodes:
+    pe1:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.11
+      startup-config: configs/pe1.cfg
+      license: license/DemolabJUNOS.cRPD.lic
+      # Interface mapping: eth0->fxp0, eth1->ge-0/0/0, eth2->ge-0/0/1, eth3->ge-0/0/2, eth4->ge-0/0/3
+      exec:
+        - "ip addr add 10.10.10.11/32 dev lo"     # Loopback
+        - "ip addr add 10.11.13.1/24 dev eth1"    # PE1 eth1 <-> PE3 eth1
+        - "ip addr add 10.11.14.1/24 dev eth2"    # PE1 eth2 <-> PE4 eth2
+        - "ip addr add 10.11.12.1/24 dev eth3"    # PE1 eth3 <-> PE2 eth3
+        - "ip addr add 10.11.12.3/24 dev eth4"    # PE1 eth4 <-> PE2 eth4
+
+    pe2:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.12
+      startup-config: configs/pe2.cfg
+      license: license/DemolabJUNOS.cRPD.lic
+      # Interface mapping: eth0->fxp0, eth1->ge-0/0/0, eth2->ge-0/0/1, eth3->ge-0/0/2, eth4->ge-0/0/3
+      exec:
+        - "ip addr add 10.10.10.12/32 dev lo"     # Loopback
+        - "ip addr add 10.11.24.1/24 dev eth1"    # PE2 eth1 <-> PE4 eth1
+        - "ip addr add 10.11.23.1/24 dev eth2"    # PE2 eth2 <-> PE3 eth2
+        - "ip addr add 10.11.12.2/24 dev eth3"    # PE2 eth3 <-> PE1 eth3
+        - "ip addr add 10.11.12.4/24 dev eth4"    # PE2 eth4 <-> PE1 eth4
+
+    pe3:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.13
+      startup-config: configs/pe3.cfg
+      license: license/DemolabJUNOS.cRPD.lic
+      # Interface mapping: eth0->fxp0, eth1->ge-0/0/0, eth2->ge-0/0/1, eth3->ge-0/0/2, eth4->ge-0/0/3, eth5->ge-0/0/4
+      exec:
+        - "ip addr add 10.10.10.13/32 dev lo"     # Loopback
+        - "ip addr add 10.11.13.2/24 dev eth1"    # PE3 eth1 <-> PE1 eth1
+        - "ip addr add 10.11.23.2/24 dev eth2"    # PE3 eth2 <-> PE2 eth2
+        - "ip addr add 10.11.35.1/24 dev eth3"    # PE3 eth3 <-> PE5 eth3
+        - "ip addr add 10.11.36.1/24 dev eth4"    # PE3 eth4 <-> PE6 eth2
+        - "ip addr add 10.11.34.1/24 dev eth5"    # PE3 eth5 <-> PE4 eth5
+
+    pe4:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.14
+      startup-config: configs/pe4.cfg
+      license: license/DemolabJUNOS.cRPD.lic
+      # Interface mapping: eth0->fxp0, eth1->ge-0/0/0, eth2->ge-0/0/1, eth3->ge-0/0/2, eth4->ge-0/0/3, eth5->ge-0/0/4
+      exec:
+        - "ip addr add 10.10.10.14/32 dev lo"     # Loopback
+        - "ip addr add 10.11.24.2/24 dev eth1"    # PE4 eth1 <-> PE2 eth1
+        - "ip addr add 10.11.14.2/24 dev eth2"    # PE4 eth2 <-> PE1 eth2
+        - "ip addr add 10.11.46.1/24 dev eth3"    # PE4 eth3 <-> PE6 eth3
+        - "ip addr add 10.11.45.1/24 dev eth4"    # PE4 eth4 <-> PE5 eth2
+        - "ip addr add 10.11.34.2/24 dev eth5"    # PE4 eth5 <-> PE3 eth5
+
+    pe5:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.15
+      startup-config: configs/pe5.cfg
+      license: license/DemolabJUNOS.cRPD.lic
+      # Interface mapping: eth0->fxp0, eth1->ge-0/0/0, eth2->ge-0/0/1, eth3->ge-0/0/2
+      exec:
+        - "ip addr add 10.10.10.15/32 dev lo"     # Loopback
+        - "ip addr add 10.11.56.1/24 dev eth1"    # PE5 eth1 <-> PE6 eth1
+        - "ip addr add 10.11.45.2/24 dev eth2"    # PE5 eth2 <-> PE4 eth4
+        - "ip addr add 10.11.35.2/24 dev eth3"    # PE5 eth3 <-> PE3 eth3
+
+    pe6:
+      kind: crpd
+      image: crpd:25.2R1.9
+      mgmt-ipv4: 172.20.20.16
+      startup-config: configs/pe6.cfg
+      license: license/DemolabJUNOS.cRPD.lic
+      # Interface mapping: eth0->fxp0, eth1->ge-0/0/0, eth2->ge-0/0/1, eth3->ge-0/0/2
+      exec:
+        - "ip addr add 10.10.10.16/32 dev lo"     # Loopback
+        - "ip addr add 10.11.56.2/24 dev eth1"    # PE6 eth1 <-> PE5 eth1
+        - "ip addr add 10.11.36.2/24 dev eth2"    # PE6 eth2 <-> PE3 eth4
+        - "ip addr add 10.11.46.2/24 dev eth3"    # PE6 eth3 <-> PE4 eth3
+
+  links:
+    # LLDP Discovery: PE1 ge-0/0/0 <-> PE3 ge-0/0/0
+    - endpoints: ["pe1:eth1", "pe3:eth1"]
+    
+    # LLDP Discovery: PE1 ge-0/0/1 <-> PE4 ge-0/0/1
+    - endpoints: ["pe1:eth2", "pe4:eth2"]
+    
+    # LLDP Discovery: PE1 ge-0/0/2 <-> PE2 ge-0/0/2
+    - endpoints: ["pe1:eth3", "pe2:eth3"]
+    
+    # LLDP Discovery: PE1 ge-0/0/3 <-> PE2 ge-0/0/3
+    - endpoints: ["pe1:eth4", "pe2:eth4"]
+    
+    # LLDP Discovery: PE2 ge-0/0/0 <-> PE4 ge-0/0/0
+    - endpoints: ["pe2:eth1", "pe4:eth1"]
+    
+    # LLDP Discovery: PE2 ge-0/0/1 <-> PE3 ge-0/0/1
+    - endpoints: ["pe2:eth2", "pe3:eth2"]
+    
+    # LLDP Discovery: PE3 ge-0/0/2 <-> PE5 ge-0/0/2
+    - endpoints: ["pe3:eth3", "pe5:eth3"]
+    
+    # LLDP Discovery: PE3 ge-0/0/3 <-> PE6 ge-0/0/1
+    - endpoints: ["pe3:eth4", "pe6:eth2"]
+    
+    # LLDP Discovery: PE3 ge-0/0/4 <-> PE4 ge-0/0/4
+    - endpoints: ["pe3:eth5", "pe4:eth5"]
+    
+    # LLDP Discovery: PE4 ge-0/0/2 <-> PE6 ge-0/0/2
+    - endpoints: ["pe4:eth3", "pe6:eth3"]
+    
+    # LLDP Discovery: PE4 ge-0/0/3 <-> PE5 ge-0/0/1
+    - endpoints: ["pe4:eth4", "pe5:eth2"]
+    
+    # LLDP Discovery: PE5 ge-0/0/0 <-> PE6 ge-0/0/0
+    - endpoints: ["pe5:eth1", "pe6:eth1"]

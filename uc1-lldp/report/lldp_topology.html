@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLDP Network Topology</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        #topology {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            cursor: move;
+        }
+        .node {
+            cursor: grab;
+        }
+        .node:active {
+            cursor: grabbing;
+        }
+        .node circle {
+            stroke: #333;
+            stroke-width: 2px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        .node text {
+            font-size: 14px;
+            font-weight: bold;
+            text-anchor: middle;
+            pointer-events: none;
+            fill: white;
+        }
+        .link {
+            stroke: #4a90e2;
+            stroke-width: 2px;
+            fill: none;
+            opacity: 0.8;
+        }
+        .link:hover {
+            stroke: #ff6b6b;
+            stroke-width: 3px;
+            opacity: 1;
+        }
+        .link-label {
+            font-size: 11px;
+            fill: #333;
+            background: white;
+            pointer-events: none;
+        }
+        .link-label-bg {
+            fill: white;
+            opacity: 0.85;
+            rx: 3;
+        }
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .legend h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+        .legend-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .stat-card h4 {
+            margin: 0 0 10px 0;
+            color: #667eea;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 LLDP Network Topology</h1>
+        <p class="subtitle">Interactive diagram - Drag nodes to rearrange • Hover over links for details</p>
+        
+        <svg id="topology" width="1400" height="800"></svg>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h4>Total Routers</h4>
+                <div class="value">6</div>
+            </div>
+            <div class="stat-card">
+                <h4>Total Links</h4>
+                <div class="value">12</div>
+            </div>
+            <div class="stat-card">
+                <h4>Parallel Links</h4>
+                <div class="value">2</div>
+            </div>
+            <div class="stat-card">
+                <h4>Total Interfaces</h4>
+                <div class="value">22</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h3>Network Connections</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 13px;">
+                <div><strong>PE1 ↔ PE2:</strong> eth3↔eth3, eth4↔eth4</div>
+                <div><strong>PE1 ↔ PE3:</strong> eth1↔eth1</div>
+                <div><strong>PE1 ↔ PE4:</strong> eth2↔eth2</div>
+                <div><strong>PE2 ↔ PE3:</strong> eth2↔eth2</div>
+                <div><strong>PE2 ↔ PE4:</strong> eth1↔eth1</div>
+                <div><strong>PE3 ↔ PE5:</strong> eth3↔eth3</div>
+                <div><strong>PE3 ↔ PE6:</strong> eth4↔eth2</div>
+                <div><strong>PE4 ↔ PE5:</strong> eth4↔eth2</div>
+                <div><strong>PE4 ↔ PE6:</strong> eth3↔eth3</div>
+                <div><strong>PE5 ↔ PE6:</strong> eth1↔eth1</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const svg = document.getElementById('topology');
+        const width = 1400;
+        const height = 800;
+
+        // Node data
+        const nodes = [
+            { id: 'PE1', x: 350, y: 200, color: '#FF6B6B', interfaces: 4 },
+            { id: 'PE2', x: 350, y: 600, color: '#4ECDC4', interfaces: 4 },
+            { id: 'PE3', x: 700, y: 200, color: '#45B7D1', interfaces: 4 },
+            { id: 'PE4', x: 700, y: 600, color: '#FFA07A', interfaces: 4 },
+            { id: 'PE5', x: 1050, y: 400, color: '#98D8C8', interfaces: 3 },
+            { id: 'PE6', x: 1050, y: 200, color: '#F7DC6F', interfaces: 3 }
+        ];
+
+        // Link data with interface mappings
+        const links = [
+            { source: 'PE1', target: 'PE2', srcIntf: 'eth3', dstIntf: 'eth3', offset: -15 },
+            { source: 'PE1', target: 'PE2', srcIntf: 'eth4', dstIntf: 'eth4', offset: 15 },
+            { source: 'PE1', target: 'PE3', srcIntf: 'eth1', dstIntf: 'eth1', offset: 0 },
+            { source: 'PE1', target: 'PE4', srcIntf: 'eth2', dstIntf: 'eth2', offset: 0 },
+            { source: 'PE2', target: 'PE3', srcIntf: 'eth2', dstIntf: 'eth2', offset: 0 },
+            { source: 'PE2', target: 'PE4', srcIntf: 'eth1', dstIntf: 'eth1', offset: 0 },
+            { source: 'PE3', target: 'PE5', srcIntf: 'eth3', dstIntf: 'eth3', offset: 0 },
+            { source: 'PE3', target: 'PE6', srcIntf: 'eth4', dstIntf: 'eth2', offset: 0 },
+            { source: 'PE4', target: 'PE5', srcIntf: 'eth4', dstIntf: 'eth2', offset: 0 },
+            { source: 'PE4', target: 'PE6', srcIntf: 'eth3', dstIntf: 'eth3', offset: 0 },
+            { source: 'PE5', target: 'PE6', srcIntf: 'eth1', dstIntf: 'eth1', offset: 0 }
+        ];
+
+        // Create links group
+        const linksGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        svg.appendChild(linksGroup);
+
+        // Create nodes group
+        const nodesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        svg.appendChild(nodesGroup);
+
+        // Create labels group
+        const labelsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        svg.appendChild(labelsGroup);
+
+        // Function to create curved path
+        function createPath(x1, y1, x2, y2, offset) {
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            // Perpendicular offset
+            const perpX = -dy / dist;
+            const perpY = dx / dist;
+            
+            const midX = (x1 + x2) / 2 + perpX * offset;
+            const midY = (y1 + y2) / 2 + perpY * offset;
+            
+            return `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`;
+        }
+
+        // Draw links
+        function drawLinks() {
+            linksGroup.innerHTML = '';
+            labelsGroup.innerHTML = '';
+            
+            links.forEach(link => {
+                const sourceNode = nodes.find(n => n.id === link.source);
+                const targetNode = nodes.find(n => n.id === link.target);
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const pathData = createPath(sourceNode.x, sourceNode.y, targetNode.x, targetNode.y, link.offset);
+                path.setAttribute('d', pathData);
+                path.setAttribute('class', 'link');
+                
+                // Add title for hover
+                const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                title.textContent = `${link.source} ${link.srcIntf} ↔ ${link.target} ${link.dstIntf}`;
+                path.appendChild(title);
+                
+                linksGroup.appendChild(path);
+                
+                // Add label
+                const dx = targetNode.x - sourceNode.x;
+                const dy = targetNode.y - sourceNode.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const perpX = -dy / dist;
+                const perpY = dx / dist;
+                
+                const labelX = (sourceNode.x + targetNode.x) / 2 + perpX * link.offset;
+                const labelY = (sourceNode.y + targetNode.y) / 2 + perpY * link.offset;
+                
+                const labelBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                const labelText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                const label = `${link.srcIntf}↔${link.dstIntf}`;
+                
+                labelText.setAttribute('x', labelX);
+                labelText.setAttribute('y', labelY);
+                labelText.setAttribute('class', 'link-label');
+                labelText.setAttribute('text-anchor', 'middle');
+                labelText.setAttribute('dominant-baseline', 'middle');
+                labelText.textContent = label;
+                
+                labelsGroup.appendChild(labelText);
+                
+                // Add background after to get bbox
+                const bbox = labelText.getBBox();
+                labelBg.setAttribute('x', bbox.x - 3);
+                labelBg.setAttribute('y', bbox.y - 2);
+                labelBg.setAttribute('width', bbox.width + 6);
+                labelBg.setAttribute('height', bbox.height + 4);
+                labelBg.setAttribute('class', 'link-label-bg');
+                
+                labelsGroup.insertBefore(labelBg, labelText);
+            });
+        }
+
+        // Draw nodes
+        nodes.forEach(node => {
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            g.setAttribute('class', 'node');
+            g.setAttribute('data-id', node.id);
+            
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', node.x);
+            circle.setAttribute('cy', node.y);
+            circle.setAttribute('r', 40);
+            circle.setAttribute('fill', node.color);
+            
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', node.x);
+            text.setAttribute('y', node.y + 5);
+            text.textContent = node.id;
+            
+            const intfText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            intfText.setAttribute('x', node.x);
+            intfText.setAttribute('y', node.y + 60);
+            intfText.setAttribute('font-size', '11');
+            intfText.setAttribute('text-anchor', 'middle');
+            intfText.setAttribute('fill', '#666');
+            intfText.textContent = `${node.interfaces} interfaces`;
+            
+            g.appendChild(circle);
+            g.appendChild(text);
+            nodesGroup.appendChild(g);
+            svg.appendChild(intfText);
+            
+            // Dragging functionality
+            let isDragging = false;
+            let startX, startY;
+            
+            g.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX - node.x;
+                startY = e.clientY - node.y;
+                g.style.cursor = 'grabbing';
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging && g.getAttribute('data-id') === node.id) {
+                    node.x = e.clientX - startX;
+                    node.y = e.clientY - startY;
+                    
+                    // Update node position
+                    circle.setAttribute('cx', node.x);
+                    circle.setAttribute('cy', node.y);
+                    text.setAttribute('x', node.x);
+                    text.setAttribute('y', node.y + 5);
+                    intfText.setAttribute('x', node.x);
+                    intfText.setAttribute('y', node.y + 60);
+                    
+                    // Redraw links
+                    drawLinks();
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    g.style.cursor = 'grab';
+                }
+            });
+        });
+
+        // Initial draw
+        drawLinks();
+    </script>
+</body>
+</html>
