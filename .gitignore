@@ -1,0 +1,25 @@
+# General
+**.bak
+**.log
+**.log.gz
+**.gz
+**/ca.key
+**/ca.pem
+**.lic
+
+# Use cases temporary files
+**/topology-data.json
+**/authorized_keys
+**/nornir-simple-inventory.yml
+**/ansible-inventory.yml
+**/log/**
+**/config/license/*
+**/config/juniper.conf
+**/config/sshd_config
+**/config/commits
+**/config/db_optimize-cfg
+**/config/db_optimize-cfg-
+**/config/*.gz
+
+# Config files
+settings.json
