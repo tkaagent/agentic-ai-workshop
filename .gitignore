@@ -6,6 +6,7 @@
 **/ca.key
 **/ca.pem
 **.lic
+**/.vscode/
 
 # Use cases temporary files
 **/topology-data.json
