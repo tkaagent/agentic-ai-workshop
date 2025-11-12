@@ -426,9 +426,9 @@ alias goworkspace='cd ~/workspace'
 
 ### Configure Visual Studio Code
 
-Once you've successfully established SSH access to the workshop VM, you can use **Visual Studio Code** to work directly on the remote environment. Follow these steps to set up your development workspace:
+Once you've successfully established SSH access to the workshop VM, you can use **Visual Studio Code** to connect to your assigned VM, and use it as your development environment. Follow these steps to set up your development workspace:
 
-1. Install and Use the SSH Remote Extension: Open Visual Studio Code and install the **Remote - SSH** extension from the Extensions marketplace if you haven't already. This red square in below picture is the icon of the **extensions** section:
+1. Install and use the SSH Remote Extension: Open Visual Studio Code and install the **Remote - SSH** extension from the Extensions marketplace if you haven't already. This red square in below picture is the icon of the **extensions** section:
 
 ![VSCode extensions icon](images/VSCode.extensions.icon.png)
 
@@ -449,7 +449,25 @@ Once you've successfully established SSH access to the workshop VM, you can use 
 
 You're now ready to begin working with the lab environment directly from Visual Studio Code!
 
-### Configure Claude Desktop
+### MCP hosts
+
+Different AI platforms can serve as MCP hosts, allowing for enhanced agentic capabilities through standardized integrations. MCP hosts act as environments where AI models can:
+
+- Connect to external tools and services
+- Access real-time data and APIs
+- Execute commands and interact with systems
+- Maintain context across complex workflows
+
+You can choose between these 2 MCP host applications:
+
+- Claude Desktop
+- Github Copilot (integrated with Visual Studio Code)
+
+However, the workshop will be run with Claude Desktop.
+
+#### Claude Desktop
+
+Claude Desktop application is the selected MCP host for the workshop. It provides a user-friendly interface for interacting with agentic AI capabilities while maintaining control over external connections.
 
 1. **Install Claude Desktop**
 
@@ -527,10 +545,76 @@ You're now ready to begin working with the lab environment directly from Visual 
 
 	![Claude Desktop always allow](images/Claude.Desktop.Always.Allow.png)
 
+#### Github Copilot (in Visual Studio Code)
+
+GitHub Copilot in VS Code represents a different approach to agentic AI integration, primarily focused on development workflows within the IDE environment. However, it can also be used as an MCP host. In order to configure it as your MCP host, follow these steps:
+
+1. **Launch Visual Studio Code**
+
+	Go to your `Visual Studio Code` and connect to the remote VM you have been assigned with the Remote SSH extension.
+
+2. **Open folder in Remote VM**
+
+	Open folder named `workspace` and create a folder inside it named `.vscode` and add below content in json format:
+
+	```json
+	{
+		"servers": {
+			"junos-mcp-jcl-naf": {
+				"type": "stdio",
+				"command": "ssh",
+				"args": [
+					"naf-ws-vm",
+					"/home/claude/.local/bin/uv",
+					"run",
+					"/home/claude/mcps/junos-mcp-server/.venv/bin/python",
+					"/home/claude/mcps/junos-mcp-server/jmcp.py",
+					"-f",
+					"/home/claude/mcps/junos-mcp-server/devices.json -t stdio"
+				]
+			},
+			"linux-mcp-jcl-naf": {
+				"type": "stdio",
+				"command": "ssh",
+				"args": [
+				"naf-ws-vm",
+				"/home/claude/.local/bin/uv",
+				"run",
+				"/home/claude/mcps/linux-mcp-server/.venv/bin/python",
+				"/home/claude/mcps/linux-mcp-server/linux-mcp-server.py"]
+			}
+		}
+	}
+	```
+
+	This screenshot is an example of it:
+
+	![VSCode MCP server configuration #1](images/VSCode.MCP.config.1.png)
+
+3. **Open AI Chat**
+
+	Open the chat of the AI agent in Visual Studio Code. You can find it in the red square in below picture:
+
+	![VSCode MCP server configuration #2](images/VSCode.MCP.config.2.png)
+
+4. **Configure Tools in AI chat**
+
+	At the chat, go to the tools icon and click there.
+
+	![VSCode MCP server tools](images/VSCode.MCP.tools.png)
+
+5. **Select NAF workshop MCPs**
+
+	A list of MCPs will be shown (some built-in, some might be yours already, and the ones that you have just configured!). Write `NAF` to filter the currently configured MCP servers and select them. 
+
+	Once both MCPs are selected, you can start them and start your workshop. See below screenshot:
+
+	![VSCode MCP NAF servers](images/NAF.MCP.servers.png)
+
 ## Key Learning Outcomes
 
 ### **Technical Skills**
-- Master MCP-based network automation
+- Understand MCP-based network automation
 - Implement AI-assisted configuration workflows
 - Develop intelligent troubleshooting procedures
 - Create automated testing and validation
