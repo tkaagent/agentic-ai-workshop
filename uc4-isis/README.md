@@ -48,7 +48,7 @@ This document must be attached/uploaded to the Claude Desktop projects. That way
 
 ## Summary
 
-In a simulated NOC workflow, an **ISIS-enabled** topology undergoes routine automation tasks during a maintenance window (e.g. user provisioning, syslog setup, and interface updates...). One maintenance script, trying to isolate a network from the routing accidentally breaks ISIS. The agentic AI autonomously investigates, performing a **Configuration Blame Analysis** that pinpoints the root cause (RCA) and identifies **who** made the change, **when**, **where** and **why**.
+In a simulated NOC workflow, an **ISIS-enabled** topology undergoes routine automation tasks during a maintenance window (e.g. user provisioning, syslog setup, and interface updates...). One maintenance script, trying to isolate a network device from the routing, accidentally breaks ISIS. The agentic AI investigates, following a best practices document, performing a **Configuration Blame Analysis** that pinpoints the root cause and identifies **who** made the change, **when**, **where** and **why**.
 
 ## Steps
 
