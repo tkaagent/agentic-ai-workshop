@@ -109,20 +109,22 @@ class UC4ISISProvisioning:
     def get_isis_enhancement_config(self, device_name: str) -> List[str]:
         """Generate ISIS protocol enhancement configuration for the device."""
         
-        if device_name == "pe5":
-            # 🚨 BREAKING CHANGE: Accidentally delete ISIS protocol on PE5
-            # Nilesh intended to configure the same enhancements but made a critical mistake
-            self.logger.warning(f"⚠️  CRITICAL: Applying ISIS protocol removal on {device_name}")
-            return [
-                "delete protocols isis",  # 🚨 ACCIDENTAL DELETION!
-                # Nilesh tried to configure enhancements after deletion (will fail)
-            ]
-        else:
-            # Normal ISIS enhancements for all other devices
-            # TODO Change it if below change does not make any sense
+        if device_name == "pe4":
+            # Apply overload timeout configuration to PE4 only
+            self.logger.info(f"📝 Applying overload timeout configuration on {device_name}")
             return [
                 "set protocols isis overload timeout 3600"
             ]
+        elif device_name == "pe5":
+            # Remove ISIS configuration from PE5
+            self.logger.warning(f"⚠️  CRITICAL: Removing ISIS protocol from {device_name}")
+            return [
+                "delete protocols isis"
+            ]
+        else:
+            # No changes for PE1, PE2, PE3, PE6
+            self.logger.info(f"📋 No ISIS changes for {device_name} (skipping)")
+            return []
 
     def check_existing_isis_config(self, device: Device, device_name: str) -> bool:
         """Check if ISIS protocol exists on the device."""
@@ -152,9 +154,16 @@ class UC4ISISProvisioning:
             
             # Generate ISIS configuration
             config_lines = self.get_isis_enhancement_config(device_name)
+            
+            # Skip device if no configuration changes
+            if not config_lines:
+                self.logger.info(f"✅ No ISIS changes needed for {device_name} - skipping")
+                device.close()
+                return True
+            
             config_text = "\n".join(config_lines)
             
-            commit_comment = f"ISIS protocol enhancements by nilesh - Performance and stability improvements for {device_name}"
+            commit_comment = f"ISIS protocol changes by nilesh - {device_name} specific configuration"
             
             self.logger.info(f"📝 Configuring ISIS protocol on {device_name}")
             self.logger.info(f"👤 Applied by: nilesh (Routing Engineer)")
@@ -292,13 +301,10 @@ class UC4ISISProvisioning:
                 self.logger.info(f"{'='*80}")
                 self.logger.info("ISIS protocol changes have been applied:")
                 self.logger.info("")
-                self.logger.info("📈 Enhancements Applied (PE1, PE2, PE3, PE4, PE6):")
-                self.logger.info("  • Hello padding enabled on all interfaces")
-                self.logger.info("  • Overload timeout set to 300 seconds")
-                self.logger.info("  • LSP lifetime extended to 1200 seconds")
-                self.logger.info("  • SPF delay optimized to 200ms")
-                self.logger.info("  • SPF holddown set to 2000ms")
-                self.logger.info("")
+                self.logger.info("📈 Configuration Applied:")
+                self.logger.info("  • PE4: Overload timeout set to 3600 seconds")
+                self.logger.info("  • PE5: ISIS protocol completely removed")
+                self.logger.info("  • PE1, PE2, PE3, PE6: No changes applied")
                 self.logger.info("")
                 self.logger.info("🔍 For UC4 Blame Analysis:")
                 self.logger.info("  • All ISIS changes are traced to nilesh")
