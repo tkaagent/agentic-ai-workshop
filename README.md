@@ -337,7 +337,7 @@ Add it and then click `Run`.
 
 ![JCL add allow network prefixes](images/JCL.run.allow.network.prefix.png)
 
-You shoud see a windown with a console output running a script to add your prefix to JCL so you can access your sandbox remotely.
+You should see a window with a console output running a script to add your prefix to JCL so you can access your sandbox remotely.
 
 ![JCL Console output](images/JCL.Console.Output.Allow.Public.IP.png)
 
