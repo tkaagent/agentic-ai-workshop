@@ -48,7 +48,7 @@ This document must be attached/uploaded to the Claude Desktop projects. That way
 
 ## Summary
 
-After deploying an **ISIS-enabled** topology, users execute multiple provisioning scripts mimicking real NOC operations—user management, syslog configuration, ISIS changes, and interface descriptions. One script intentionally introduces a network-breaking change. The AI agent then performs a Configuration Blame Analysis, systematically tracing every configuration line back to its specific commit, author, and timestamp to identify who made the problematic change.
+In a simulated NOC workflow, an **ISIS-enabled** topology undergoes routine automation tasks during a maintenance window (e.g. user provisioning, syslog setup, and interface updates...). One maintenance script, trying to isolate a network from the routing accidentally breaks ISIS. The agentic AI autonomously investigates, performing a **Configuration Blame Analysis** that pinpoints the root cause (RCA) and identifies **who** made the change, **when**, **where** and **why**.
 
 ## Steps
 
