@@ -499,33 +499,35 @@ Claude Desktop application is the selected MCP host for the workshop. It provide
 
 	```json
 	{
-	"mcpServers": {
-		"junos-mcp-jcl-naf": {
-		"type": "stdio", 
-		"command": "ssh",
-		"args": [
-			"naf-ws-vm",
-			"/home/claude/.local/bin/uv",
-			"run",
-			"/home/claude/mcps/junos-mcp-server/.venv/bin/python",
-			"/home/claude/mcps/junos-mcp-server/jmcp.py",
-			"-f",
-			"/home/claude/mcps/junos-mcp-server/devices.json -t stdio"],
-		"cwd": "/home/claude/mcps/junos-mcp-server/"
-		},
-		"linux-mcp-jcl-naf": {
-		"type": "stdio",
-		"command": "ssh",
+		"mcpServers": {
+			"junos-mcp-jcl-naf": {
+				"type": "stdio",
+				"command": "ssh",
 				"args": [
-				"naf-ws-vm",
-				"/home/claude/.local/bin/uv",
-				"run",
-				"/home/claude/mcps/linux-mcp-server/.venv/bin/python",
-				"/home/claude/mcps/linux-mcp-server/linux-mcp-server.py"],
+					"naf-ws-vm",
+					"/home/claude/.local/bin/uv",
+					"run",
+					"/home/claude/mcps/junos-mcp-server/.venv/bin/python",
+					"/home/claude/mcps/junos-mcp-server/jmcp.py",
+					"-f",
+					"/home/claude/mcps/junos-mcp-server/devices.json -t stdio"
+				],
+				"cwd": "/home/claude/mcps/junos-mcp-server/"
+			},
+			"linux-mcp-jcl-naf": {
+				"type": "stdio",
+				"command": "ssh",
+				"args": [
+					"naf-ws-vm",
+					"/home/claude/.local/bin/uv",
+					"run",
+					"/home/claude/mcps/linux-mcp-server/.venv/bin/python",
+					"/home/claude/mcps/linux-mcp-server/linux-mcp-server.py"
+				],
 				"cwd": "/home/claude/mcps/linux-mcp-server/"
-		}
-	},
-	"globalShortcut": ""
+			}
+		},
+		"globalShortcut": ""
 	}
 	```
 
@@ -555,7 +557,7 @@ GitHub Copilot in VS Code represents a different approach to agentic AI integrat
 
 2. **Open folder in Remote VM**
 
-	Open folder named `workspace` and create a folder inside it named `.vscode` and add below content in json format:
+	Open folder named `workspace` and create a folder inside it named `.vscode`. Create a file named `mcp.json` and add below content:
 
 	```json
 	{
@@ -577,11 +579,12 @@ GitHub Copilot in VS Code represents a different approach to agentic AI integrat
 				"type": "stdio",
 				"command": "ssh",
 				"args": [
-				"naf-ws-vm",
-				"/home/claude/.local/bin/uv",
-				"run",
-				"/home/claude/mcps/linux-mcp-server/.venv/bin/python",
-				"/home/claude/mcps/linux-mcp-server/linux-mcp-server.py"]
+					"naf-ws-vm",
+					"/home/claude/.local/bin/uv",
+					"run",
+					"/home/claude/mcps/linux-mcp-server/.venv/bin/python",
+					"/home/claude/mcps/linux-mcp-server/linux-mcp-server.py"
+				]
 			}
 		}
 	}
