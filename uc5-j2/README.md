@@ -24,10 +24,6 @@ Here it is a very simple example of a jinja2 template:
 set system time-zone {{ timezone }}
 ```
 
-And here it is an example created in the project:
-
-[Jinja2 time-zone template](./template/timezone_config.j2)
-
 Why use Jinja2 in Automation?
 
 - 📋 Consistency – no typos, all configs follow the same structure.
@@ -47,19 +43,15 @@ Instead of hardcoding each value (e.g. an `IP` or `description`), you put variab
 
 This way, with one Jinja2 template and YAML files, you can reuse and render configs as you like.
 
-Here it is a very simple example of a YAML file with 2 variables:
+Here it is a very simple example of a YAML file with a variable `timezone`:
 
 ```yaml
-timezone: Europe/London
+timezone: America/Los_Angeles
 ```
-
-And here it is an example created in the project:
-
-- [YAML variables](./template/timezone_vars.yml)
 
 ### Change configuration
 
-When rendering the configuration 
+Imagine there is not configuration related to the timezone in the device:
 
 ```
 claude@R5> show configuration system time-zone
@@ -67,7 +59,7 @@ claude@R5> show configuration system time-zone
 claude@R5>
 ```
 
-After the AI agent pushes the configuration, you can see the change being applied:
+When rendering the template, the AI agent pushes the piece of config generated, and you can see the change being applied:
 
 ```
 claude@R5> show configuration | compare rollback 1
