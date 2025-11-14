@@ -143,6 +143,8 @@ This step corresponds to `milestone #4` 🚩.
 > 2. Recommend a fix for it. 
 > 3. Do not apply any configuration changes. Ask me for approval with the recommended a fix.
 
+Review the recommended fix and approve it!
+
 This step corresponds to `milestone #5` 🚩.
 
 #### 6. Prompt - Destroy the topology
