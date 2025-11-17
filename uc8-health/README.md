@@ -1,6 +1,7 @@
 # Use Case #8 - Health
 
 ## Quick Links
+
 - [Intro](#intro)
 - [Summary](#summary)
 - [Steps](#steps)
@@ -18,11 +19,11 @@ HEALTH.CHECK.md
 
 ## Summary
 
-Users will create a health check document to verify device and network health by writing their own markdown file. We have a containerlab setup for this use case but the user is free to use any lab topology they wish to use. 
+Users will create a health check document to verify **device and network health** by writing their own markdown file.
 
-The goal here is to find a the sweet spot with respect to context engineering. Users should test a few prompts in Claude before starting to write into the markdown file. 
+The goal here is to find a the sweet spot with respect to context engineering. Users should test a few prompts in Claude before starting to write into the markdown file.
 
-When complete, HEALTH.CHECK.md will be run on the topology of choice. 
+When complete, `HEALTH.CHECK.md` will be run on the topology of choice.
 
 ## Steps
 
@@ -43,7 +44,7 @@ This is the list of suggested steps in use case #8:
 
 #### 1. Prompt - Deploy topology
 
-📢 **Start a new chat for this use case!**
+**NOTE:** There is a containerlab setup for this use case (OSPF routing, from `UC#3`), but feel free to use any lab topology you wish to use. Just remember to name it `uc8-health.clab.yml` so below prompt will spin your topology up.
 
 > 1. Connect to the Linux VM and go to the directory named `/home/claude/workspace/uc8-health/`. This will be your `workspace` for this `use case #8 (Health)`.
 > 2. Deploy the container lab topology file (`uc8-health.clab.yml`). No `sudo` required.
@@ -54,11 +55,11 @@ This step corresponds to `milestone #1` 🚩.
 
 #### 2. Manual - Create a document
 
-You must create a markdown document where you define the health of your network. HEALTH.CHECK.md in the utils folder if you want to stay consistent to our git repo. 
+You must create a markdown document where you define the health of your network. Name it as you want, e.g. `HEALTH.CHECK.md` and place it in the `utils/` folder to stay consistent to our git repo.
 
-Please briefly look at CONFIG.BLAME.md and then look more thorough look at CORE.DUMPS.md to see examples of other context files. 
+Please briefly look at `CONFIG.BLAME.md` and then look more thorough look at `CORE.DUMPS.md` to see examples of other context files.
 
-At the top write the purpose of the health check. You may want to write one for a specific protocol across the network or to look at specific devices. If you want you can use the first part of the core dump file and state that the existence of a core dump is considered a RED ALERT. You decide the metrics Claude will use. 
+At the top write the purpose of the health check. You may want to write one for a specific protocol across the network or to look at specific devices. If you want you can use the first part of the core dump file and state that the existence of a core dump is considered a RED ALERT. You decide the metrics Claude will use.
 
 Have fun and here are various Junos commands that may be of interest:
 - show system information
@@ -85,7 +86,7 @@ You should have already a project named `NAF AC4 workshop` from previous use cas
 
 Once you got it created, upload your document to the files section. This is an example of how it should look like once it has been added:
 
-![Claude Desktop projects](../images/NAF.AC4.workshop.docs.png)
+![Claude Desktop projects](../images/NAF.AC4.workshop.docs.3.png)
 
 This step corresponds to `milestone #3` 🚩.
 
@@ -136,13 +137,3 @@ These are the milestones accomplished in this use case (either manually or by pr
 3. 🚩 Manual - Upload the document to Claude project (e.g. `NAF AC4 Project`)
 4. 🚩 Prompt - Ask Claude to use the document you create for the purpose you meant.
 5. 🚩 Prompt or Manual - Destroy the containerlab topology and clean up the environment.
-
----
-
-## Outcomes
-
-//TODO
-
-## What's next?
-
-//TODO
