@@ -18,7 +18,11 @@ HEALTH.CHECK.md
 
 ## Summary
 
-//TODO
+Users will create a health check document to verify device and network health by writing their own markdown file. We have a containerlab setup for this use case but the user is free to use any lab topology they wish to use. 
+
+The goal here is to find a the sweet spot with respect to context engineering. Users should test a few prompts in Claude before starting to write into the markdown file. 
+
+When complete, HEALTH.CHECK.md will be run on the topology of choice. 
 
 ## Steps
 
@@ -37,13 +41,37 @@ This is the list of suggested steps in use case #8:
 
 📢 **Suggestion: Start a new chat for this use case!**
 
-#### 1. Manual - Create a document
+#### 1. Prompt - Deploy topology
 
-You must create a markdown document where you define the health of your network.
+📢 **Start a new chat for this use case!**
+
+> 1. Connect to the Linux VM and go to the directory named `/home/claude/workspace/uc8-health/`. This will be your `workspace` for this `use case #8 (Health)`.
+> 2. Deploy the container lab topology file (`uc8-health.clab.yml`). No `sudo` required.
+> 3. Verify that the state of all the containers from that topology is `running`.
+> 4. Do not do anything else.
 
 This step corresponds to `milestone #1` 🚩.
 
-#### 2. Manual - Upload your document
+#### 2. Manual - Create a document
+
+You must create a markdown document where you define the health of your network. HEALTH.CHECK.md in the utils folder if you want to stay consistent to our git repo. 
+
+Please briefly look at CONFIG.BLAME.md and then look more thorough look at CORE.DUMPS.md to see examples of other context files. 
+
+At the top write the purpose of the health check. You may want to write one for a specific protocol across the network or to look at specific devices. If you want you can use the first part of the core dump file and state that the existence of a core dump is considered a RED ALERT. You decide the metrics Claude will use. 
+
+Have fun and here are various Junos commands that may be of interest:
+- show system information
+- show system processes
+- show system alarms
+- show system uptime
+- show log messages
+- show configuration ...
+- show route ...
+
+This step corresponds to `milestone #2` 🚩.
+
+#### 3. Manual - Upload your document
 
 Your document must be uploaded to the `Projects` section of Claude Desktop application. That way, those `documents`, `code`, or any other `files` added to the project can be used by Claude and being referenced in your chats.
 
@@ -59,26 +87,16 @@ Once you got it created, upload your document to the files section. This is an e
 
 ![Claude Desktop projects](../images/NAF.AC4.workshop.docs.png)
 
-This step corresponds to `milestone #2` 🚩.
-
-#### 3. Prompt - Deploy topology
-
-📢 **Start a new chat for this use case!**
-
-> 1. Connect to the Linux VM and go to the directory named `/home/claude/workspace/uc8-health/`. This will be your `workspace` for this `use case #8 (Health)`.
-> 2. Deploy the container lab topology file (`uc8-health.clab.yml`). No `sudo` required.
-> 3. Verify that the state of all the containers from that topology is `running`.
-> 4. Do not do anything else.
-
 This step corresponds to `milestone #3` 🚩.
 
-#### 3. Prompt - Run your health check according to your currently written doc
+
+#### 4. Prompt - Run your health check according to your currently written doc
 
 > Follow you the uploaded document **HEALTH.CHECK.md** and issue a health check report of the network.
 
 This step corresponds to `milestone #4` 🚩.
 
-#### 4. Prompt - Destroy the topology
+#### 5. Prompt - Destroy the topology
 
 1. 💡tip: This is the end of this use case. Do not destroy the topology if you still want to play a bit until the rest of the people finishes or proctors move the the next one.
 2. 💡tip: If you feel comfortable with ContainerLab and Linux, you can **save some tokens** by destroying the topology yourself through the CLI issuing the following commands:
@@ -113,9 +131,9 @@ This step corresponds to `milestone #5` 🚩.
 
 These are the milestones accomplished in this use case (either manually or by prompting the AI agent):
 
-1. 🚩 Manual - Create a Markdown document that Claude will use as a guide to check the health of your network.
-2. 🚩 Manual - Upload the document to Claude project (e.g. `NAF AC4 Project`)
-3. 🚩 Prompt - Ask our AI agent to connect to the Linux server and deploy a Container Lab topology (Linux MCP).
+1. 🚩 Prompt - Ask our AI agent to connect to the Linux server and deploy a Container Lab topology (Linux MCP).
+2. 🚩 Manual - Create a Markdown document that Claude will use as a guide to check the health of your network.
+3. 🚩 Manual - Upload the document to Claude project (e.g. `NAF AC4 Project`)
 4. 🚩 Prompt - Ask Claude to use the document you create for the purpose you meant.
 5. 🚩 Prompt or Manual - Destroy the containerlab topology and clean up the environment.
 
