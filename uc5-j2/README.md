@@ -186,7 +186,3 @@ claude@R1>
 ```
 
 2. Depending on your new configuration template, the devices will be provisioned with another piece of config related to your template and your variables. If Claude faced any issues due to the different config structure of the cRDP, the changes would be related to the Interfaces descriptions (as suggested in the prompt).
-
-## What's next?
-
-//TODO

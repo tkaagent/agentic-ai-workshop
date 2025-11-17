@@ -112,7 +112,7 @@ This step corresponds to `milestones #6 and #7` 🚩.
 
 #### 4. Prompt - Destroy the topology
 
-1. 💡tip: This is the end of this use case. Do not destroy the topology if you still want to play a bit until the rest of the people finish or proctors move to the next one.
+1. 💡tip: This is the end of this use case. Do not destroy the topology if you still want to play a bit until the rest of the people finish or proctors move the the next one.
 2. 💡tip: If you feel comfortable with ContainerLab and Linux, you can **save some tokens** by destroying the topology yourself through the CLI issuing the following commands:
 
 ```bash
@@ -165,9 +165,3 @@ This is a screenshot of one of the topology diagram generated when preparing thi
 You can find also the `interactive HTML topology diagram` generated here:
 
 [UC1 topology diagram](../uc1-lldp/report/lldp_topology.html)
-
-## What's next?
-
-//TODO
-
-

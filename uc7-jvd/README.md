@@ -168,13 +168,3 @@ These are the milestones accomplished in this use case (either manually or by pr
 5. 🚩 Manual - Deploy generated topology file
 6. 🚩 Manual - Review generated topology diagram (VSCode Containerlab plugin or topology graph)
 7. 🚩 Prompt or Manual - Destroy the containerlab topology and clean up the environment.
-
----
-
-## Outcomes
-
-//TODO
-
-## What's next?
-
-//TODO

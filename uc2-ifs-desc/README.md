@@ -213,8 +213,3 @@ uc2 (Interface descriptions) -> uc1 (LLDP)
 ```
 
 We have seen that the LLM has checked the local interface and local host to check if matching the naming convention, but in this second use case, it did not configure LLDP to match existing configuration data with physical data. If so, that would mean the AI agent will do a double check. Not only the local router and interface, but also the other end of the link, the `$Remote_Router` and `$Remote_Interface`.
-
-## What's next?
-
-//TODO
-

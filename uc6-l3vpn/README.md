@@ -208,14 +208,3 @@ These are the milestones accomplished in this use case (either manually or by pr
 6. 🚩 Manual - We check the status of the connectivity with an continous `ping` command and let it work while we see what it is doing and its reasoning.
 7. 🚩 Prompt - Ask the AI agent to issue a report about the incident and the fix.
 8. 🚩 Prompt or Manual - Destroy the containerlab topology and clean up the environment.
-
----
-
-## Outcomes
-
-//TODO
-
-## What's next?
-
-//TODO
-

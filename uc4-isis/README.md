@@ -188,13 +188,3 @@ These are the milestones accomplished in this use case (either manually or by pr
 4. 🚩 Manual - By running a few scripts (listed below) we are simulating some operations in the network and one of them is going to break something.
 5. 🚩 Prompt - After running the scripts, we are asking the AI agent to help us figure out who is responsible of the issue in the network following the [CONFIG.BLAME.md](../CONFIG.BLAME.md) document.
 6. 🚩 Prompt or Manual - Destroy the containerlab topology and clean up the environment.
-
----
-
-## Outcomes
-
-//TODO
-
-## What's next?
-
-//TODO

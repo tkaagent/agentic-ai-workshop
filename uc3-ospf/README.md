@@ -138,7 +138,7 @@ This step corresponds to `milestone #7` 🚩.
 
 #### 7. Prompt - Destroy the topology
 
-1. 💡tip: This is the end of this use case. Do not destroy the topology if you still want to play a bit until the rest of the people finish or proctors move to the next one.
+1. 💡tip: This is the end of this use case. Do not destroy the topology if you still want to play a bit until the rest of the people finish or proctors move the the next one.
 2. 💡tip: If you feel comfortable with ContainerLab and Linux, you can **save some tokens** by destroying the topology yourself through the CLI issuing the following commands:
 
 ```bash
@@ -183,13 +183,3 @@ These are the milestones accomplished in this use case (either manually or by pr
 6. 🚩 Manual - Simulate a `core-dump` in a router. Force the `routing` process (rpd) to crash and generate a core dump.
 7. 🚩 Prompt - Ask our AI agent to investigate OSPF and the `core dump` and give the traceback from the core dump.
 8. 🚩 Prompt or Manual - Destroy the containerlab topology and clean up the environment.
-
----
-
-## Outcomes
-
-//TODO
-
-## What's next?
-
-//TODO
