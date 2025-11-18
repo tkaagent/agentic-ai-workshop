@@ -531,6 +531,11 @@ Claude Desktop application is the selected MCP host for the workshop. It provide
 	}
 	```
 
+	Windows users should install Git Bash and replace the 2 command lines with this:
+	```json
+	"command": "C:/Program Files/Git/usr/bin/ssh.exe",
+	```
+
 5. **Restart Claude Desktop application**
 
 	`Close` and `open` again the application to reload the configuration.
